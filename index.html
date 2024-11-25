@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sustainability Data Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background-color: #4caf50;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    form input, form select, form button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    form button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sustainability Data Management</h1>
+    <p>Predict Crop Yield Using Machine Learning</p>
+  </header>
+  <main>
+    <form id="prediction-form">
+      <h2>Input Crop Data</h2>
+      <label for="soilQuality">Soil Quality Index (50-100):</label>
+      <input type="number" id="soilQuality" name="soilQuality" step="0.1" required>
+
+      <label for="seedVariety">Seed Variety:</label>
+      <select id="seedVariety" name="seedVariety">
+        <option value="0">Normal Variety</option>
+        <option value="1">High-Yield Variety</option>
+      </select>
+
+      <label for="fertilizer">Fertilizer Amount (kg/ha):</label>
+      <input type="number" id="fertilizer" name="fertilizer" step="0.1" required>
+
+      <label for="sunnyDays">Sunny Days (50-120):</label>
+      <input type="number" id="sunnyDays" name="sunnyDays" required>
+
+      <label for="rainfall">Rainfall (mm):</label>
+      <input type="number" id="rainfall" name="rainfall" step="0.1" required>
+
+      <label for="irrigation">Number of Irrigations:</label>
+      <input type="number" id="irrigation" name="irrigation" required>
+
+      <button type="submit">Predict Yield</button>
+    </form>
+
+    <div class="result" id="result" style="display: none;">
+      <h2>Prediction Result</h2>
+      <p id="yieldResult">Predicted Yield: <strong>--</strong> kg/ha</p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("prediction-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      // Collect form inputs
+      const soilQuality = parseFloat(document.getElementById("soilQuality").value);
+      const seedVariety = parseInt(document.getElementById("seedVariety").value);
+      const fertilizer = parseFloat(document.getElementById("fertilizer").value);
+      const sunnyDays = parseInt(document.getElementById("sunnyDays").value);
+      const rainfall = parseFloat(document.getElementById("rainfall").value);
+      const irrigation = parseInt(document.getElementById("irrigation").value);
+
+      // Prepare request payload
+      const payload = {
+        Soil_Quality: soilQuality,
+        Seed_Variety: seedVariety,
+        Fertilizer_Amount_kg_per_hectare: fertilizer,
+        Sunny_Days: sunnyDays,
+        Rainfall_mm: rainfall,
+        Irrigation_Schedule: irrigation
+      };
+
+      // Call AI Model API
+      try {
+        const response = await fetch("https://your-cloud-run-url/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        // Display prediction result
+        document.getElementById("yieldResult").innerHTML = `Predicted Yield: <strong>${result.prediction.toFixed(2)}</strong> kg/ha`;
+        document.getElementById("result").style.display = "block";
+      } catch (error) {
+        console.error("Error fetching prediction:", error);
+        alert("Failed to fetch prediction. Please try again later.");
+      }
+    });
+  </script>
+</body>
+</html>
