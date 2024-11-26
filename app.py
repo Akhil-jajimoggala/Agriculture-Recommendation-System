@@ -48,22 +48,17 @@ def predict():
         # Ensure all required fields are provided
         if None in [soil_quality, seed_variety, fertilizer, sunny_days, rainfall, irrigation]:
             return jsonify({"error": "Missing one or more required fields"}), 400
-        text_dict = str(data)
-        #print("hello",text_dict,type(text_dict))
-        # Prepare input data for the model
-        # input_features = np.array([[soil_quality, seed_variety, fertilizer, sunny_days, rainfall, irrigation]])
-        #input_features = {'Soil_Quality': 70, 'Seed_Variety': 0, 'Fertilizer_Amount_kg_per_hectare': 279.8, 'Sunny_Days': 102, 'Rainfall_mm': 471.3, 'Irrigation_Schedule': 7}
-        text_input = str(text_dict)
-        print("hello",text_input)
+        
+        text_input = str(data)
+
         # Make prediction
         prediction = model.generate_content(text_input)
 
-        print(prediction)
         prediction_dict = prediction.to_dict()
         final_text = prediction_dict['candidates'][0]['content']['parts'][0]['text'].replace('"','')
         print(final_text,type(final_text))
-        # Return the prediction as a JSON response
 
+        # Return the prediction as a JSON response
         return jsonify({"prediction": str(final_text).replace('"','')})
 
     except Exception as e:
