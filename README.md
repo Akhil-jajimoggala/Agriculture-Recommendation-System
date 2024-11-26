@@ -70,7 +70,78 @@ This tool predicts crop yield based on historical data of weather conditions, so
    - Provide inputs (e.g., weather conditions, soil properties) to test predictions.  
 
 ---
+## 💻 **Local Development Setup**
 
+1. **Add required service account files:**
+   - `gcp_storage.json` (for GCS authentication)  
+   - `vertex-ai-user.json` (for Vertex AI authentication)  
+
+   > It is recommended to store these files in a secure **Secrets Store**.
+
+2. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Akhil-jajimoggala/Agriculture-Yield-Prediction-System
+   cd Agriculture-Yield-Prediction-System
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run the app locally:**
+   ```bash
+   python app.py
+   ```
+
+---
+
+## 📦 **Containerization with Docker**
+
+### **1️⃣ Build Docker Image**  
+   ```bash
+   docker build -t agriculture-yield-predictor .
+   ```
+
+### **2️⃣ Run the container locally**  
+   ```bash
+   docker run -p 8080:8080 agriculture-yield-predictor
+   ```
+
+---
+
+## 🌐 **Deploying to Google Cloud Run**
+
+1. **Authenticate the Google Cloud CLI:**  
+   ```bash
+   gcloud auth login
+   ```
+
+2. **Configure the project:**  
+   ```bash
+   gcloud config set project [PROJECT_ID]
+   ```
+
+3. **Configure Docker for Google Cloud Registry:**  
+   ```bash
+   gcloud auth configure-docker
+   ```
+
+4. **Tag and push Docker image:**  
+   ```bash
+   docker tag agriculture-yield-predictor gcr.io/<PROJECT_ID>/agriculture-yield-predictor:1
+   docker push gcr.io/<PROJECT_ID>/agriculture-yield-predictor:1
+   ```
+
+5. **Deploy to Cloud Run:**  
+   ```bash
+   gcloud run deploy agriculture-yield-predictor \
+       --image gcr.io/<PROJECT_ID>/agriculture-yield-predictor:1 \
+       --platform managed \
+       --region <LOCATION>
+   ```
+
+---
 ## 📊 **Results**
 
 - Predicts **yield in kg/ha** based on the provided weather and soil conditions.  
